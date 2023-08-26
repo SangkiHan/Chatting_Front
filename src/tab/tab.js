@@ -8,20 +8,20 @@
  import React from 'react';
  import {StyleSheet, Image} from 'react-native'
  import TabHomeScreen from './home_tab';
- import TabContactScreen from './contact_tab';
+ import ChatRoomListTab from './ChatRoomListTab';
  import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
  const Tab = createBottomTabNavigator();
 
- let HomeLogo = '../../assets/pics/home_icon.png'
- let ContactLogo = '../../assets/pics/contact_icon.png'
+ let HomeLogo = '../../assets/pics/friends_icon.png'
+ let ContactLogo = '../../assets/pics/chat_icon.png'
  
  const tabName = (name) =>{
     let tabName;
     if(name==="home"){
         tabName = "홈"
-    }else if(name==="contact"){
-        tabName = "연락처"
+    }else if(name==="RoomList"){
+        tabName = "채팅방"
     }
     return tabName;
  }
@@ -33,7 +33,7 @@
 
   if(name==="Home"){
     iconImagePath = require(HomeLogo) 
-  } else if(name==="Contact"){
+  } else if(name==="RoomList"){
     iconImagePath = require(ContactLogo)
   }
   return (
@@ -65,7 +65,7 @@
               })}
             >
               <Tab.Screen name="Home" component={TabHomeScreen}/>
-              <Tab.Screen name="Contact" component={TabContactScreen}/>
+              <Tab.Screen name="RoomList" component={ChatRoomListTab}/>
             </Tab.Navigator>
         )
      }

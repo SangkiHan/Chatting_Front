@@ -13,7 +13,8 @@
  import { NavigationContainer } from '@react-navigation/native';
  import { createNativeStackNavigator } from '@react-navigation/native-stack';
  import TabScreen from './src/tab/tab';
- import ContactDetailScreen from './src/stack/contact_detail';
+ import ChattingRoom from './src/stack/chattingRoom';
+ import LoginScreen from './src/stack/Login';
  
  const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,13 @@
      return (
        <NavigationContainer>
          <Stack.Navigator>
+          <Stack.Screen
+            name="Login"
+            options={{
+              headerTitle:"Simple Chatting App"
+            }}
+            component={LoginScreen}
+           />
            <Stack.Screen 
              name="Main" 
              component={TabScreen}
@@ -31,8 +39,8 @@
              }}
            />
            <Stack.Screen
-            name="ContactDetailScreen"
-            component={ContactDetailScreen}
+            name="ChattingRoom"
+            component={ChattingRoom}
            />
          </Stack.Navigator>
        </NavigationContainer>
