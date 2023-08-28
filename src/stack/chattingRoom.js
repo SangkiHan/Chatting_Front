@@ -17,7 +17,7 @@ import { format } from 'date-fns';
 import { useUser } from '../context/UserProvider';
  
  const ChattingRoom = (props) => {
-    const { userId } = useUser();
+    const { userData } = useUser();
     const { StatusBarManager } = NativeModules;
     const { params } = props.route;
  
@@ -55,7 +55,6 @@ import { useUser } from '../context/UserProvider';
     }
 
     useEffect(() => {
-
         Platform.OS == 'ios' ? StatusBarManager.getHeight((statusBarFrameData) => {
             setStatusBarHeight(statusBarFrameData.height)
         }) : null
@@ -108,7 +107,7 @@ import { useUser } from '../context/UserProvider';
         if (clientRef.current && clientRef.current.connected) {
             const date = new Date();
             const formattedDate = format(date, 'yyyy-MM-dd HH:mm');
-            const message = { message: textInput, roomId:params.roomId, sender: userId, type:"TALK", time: formattedDate};
+            const message = { message: textInput, roomId:params.roomId, senderId: userData.userId, sender: userData.userName, type:"TALK", time: formattedDate};
             clientRef.current.publish({ destination: "/pub/chat/sendMessage", body: JSON.stringify(message) });
             setTextInput("");
         }
@@ -133,7 +132,7 @@ import { useUser } from '../context/UserProvider';
                 data={messages}
                 keyExtractor={(item, index) => item.message + index}
                 renderItem={({ item }) =>
-                item.sender === userId ? (
+                item.senderId === userData.userId ? (
                     <MyChatCell chat={item} />
                 ) : (
                     <OtherChatCell chat={item} />

@@ -3,14 +3,22 @@ import React, { createContext, useContext, useState } from 'react';
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [userId, setUserId] = useState(null);
+  const [userData, setUserData] = useState({
+    userId: null,
+    userName: null
+  });
 
-  const setUser = (newUserId) => {
-    setUserId(newUserId);
+  const setUser = (newUserId, newUserName) => {
+    setUserData({
+      userId: newUserId,
+      userName: newUserName
+    });
   };
 
   return (
-    <UserContext.Provider value={{ userId, setUser }}>
+    <UserContext.Provider 
+      value={{ userData, setUser }}
+    >
       {children}
     </UserContext.Provider>
   );

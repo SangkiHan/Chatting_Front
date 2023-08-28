@@ -14,9 +14,9 @@ import { useUser } from '../context/UserProvider';
 
 const LoginScreen = (props) => {
 
-const { setUser } = useUser();
+const { userData, setUser } = useUser();
 const { StatusBarManager } = NativeModules;
-const [userName, setUserName] = useState('');
+const [userIdVal, setUserId] = useState('');
 const [statusBarHeight, setStatusBarHeight] = useState(0);
 
 useEffect(()=> {
@@ -28,16 +28,15 @@ useEffect(()=> {
 const onPress = () => {
     axios({
         method: "post",
-        url: "http://218.155.95.66:8100/v1/member/login",
+        url: "http://218.155.95.66:8100/v1/user/login",
         params: {
-            memberName: userName
+            userId: userIdVal
         },
         responseType: "json"
     })
     .then(response => {
       if (response.status === 200) {
-        console.log('Login successful');
-        setUser(userName);
+        setUser(response.data.userId, response.data.userName);
         props.navigation.navigate("Main")
       } else {
         console.log('Login failed');
@@ -58,9 +57,9 @@ return (
         <GestureHandlerRootView style={styles.container}>
             <TextInput
                 style={styles.input}
-                placeholder="사용자명"
-                value={userName}
-                onChangeText={setUserName}
+                placeholder="ID"
+                value={userIdVal}
+                onChangeText={setUserId}
             />
             <Button 
                 title="Login"

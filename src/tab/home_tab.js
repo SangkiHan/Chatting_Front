@@ -11,9 +11,38 @@ import {StyleSheet, View, Text, Button} from 'react-native'
 import {  GestureHandlerRootView, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useState } from 'react/cjs/react.development';
 import TopTitle from '../component/TopTitle';
+import { useUser } from '../context/UserProvider';
+
+const press = () => {
+    const { userId } = useUser();
+    // axios({
+    //     method: "post",
+    //     url: "http://218.155.95.66:8100/v1/member/login",
+    //     params: {
+    //         userId: userId,
+    //         other
+    //     },
+    //     responseType: "json"
+    // })
+    // .then(response => {
+    //   if (response.status === 200) {
+    //     console.log('Login successful');
+    //     setUser(userName);
+    //     props.navigation.navigate("Main")
+    //   } else {
+    //     console.log('Login failed');
+    //     showAlert('Login failed', 'Invalid credentials or server error');
+    //   }
+    // })
+    // .catch(error => {
+    //   alert(error);
+    // });
+}
 
 const RenderPerson = (props) => {
-    console.log(props);
+
+
+
     return (
         <GestureHandlerRootView>
         {
@@ -21,9 +50,9 @@ const RenderPerson = (props) => {
                 <TouchableOpacity  
                     style={styles.container} 
                     key={idx}
-                    // onPress={() => press(props, item)}
+                    onPress={() => press(props, item)}
                 >
-                    <Text style={styles.name}>{item.memberName}</Text>
+                    <Text style={styles.name}>{item.userName}</Text>
                 </TouchableOpacity>
             ))
         }
