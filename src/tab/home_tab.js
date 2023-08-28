@@ -21,7 +21,7 @@ const RenderPerson = (props) => {
                 <TouchableOpacity  
                     style={styles.container} 
                     key={idx}
-                    onPress={() => press(props, item)}
+                    // onPress={() => press(props, item)}
                 >
                     <Text style={styles.name}>{item.memberName}</Text>
                 </TouchableOpacity>

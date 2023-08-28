@@ -6,6 +6,8 @@
  * @flow strict-local
  */
  import { Client, Stomp } from '@stomp/stompjs';
+import axios from 'axios';
+import { format } from 'date-fns';
  import React, { useEffect, useRef, useState } from 'react';
  import {StyleSheet, View, Text, Button, ScrollView, FlatList, Pressable, KeyboardAvoidingView, Platform, StatusBar, NativeModules} from 'react-native'
  import { GestureHandlerRootView, State, TextInput, TouchableOpacity } from 'react-native-gesture-handler';
@@ -31,39 +33,62 @@ import { useUser } from '../context/UserProvider';
         headerTitle: params.name
     })
 
+    const findChat = () => {
+        axios({
+            method: "get",
+            url: "http://218.155.95.66:8100/v1/chat/findChat",
+            params: {
+                roomId: params.roomId
+            },
+            responseType: "json"
+        })
+        .then(response => {
+          if (response.status === 200) {
+            setMessages(response.data);
+          } else {
+
+          }
+        })
+        .catch(error => {
+          alert(error);
+        });
+    }
+
     useEffect(() => {
-        console.log("Height: ",StatusBarManager.getHeight)
 
         Platform.OS == 'ios' ? StatusBarManager.getHeight((statusBarFrameData) => {
             setStatusBarHeight(statusBarFrameData.height)
         }) : null
+
+        findChat();
+
         // STOMP 클라이언트 생성
         clientRef.current = new Client({
-        brokerURL: 'http://218.155.95.66:8100/ws-stomp/websocket',
-        reconnectDelay: 5000,
-        forceBinaryWSFrames: true,
-        appendMissingNULLonIncoming: true,
-        debug: (msg) => {
-            console.log(msg)
-        },
-        onConnect: (frame) => {
-            console.log('Connected to STOMP server:', frame);
-            const subscription = clientRef.current.subscribe('/sub/chat/room/'+params.roomId, (message) => {
-                const newMessage = JSON.parse(message.body);
-                console.log(newMessage);
-                setMessages((prevMessages) => [...prevMessages, newMessage]);
-                setTimeout(()=>{
-                flatList.current.scrollToEnd();
-                },400)
-            });
-        },
-        onStompError: (error) => {
-            console.error('STOMP Error:', error);
-        },
-        onWebSocketError: (error) => {
-            console.error('WebSocket Error:', error);
-        },
-    });
+            brokerURL: 'http://218.155.95.66:8100/ws-stomp/websocket',
+            reconnectDelay: 5000,
+            forceBinaryWSFrames: true,
+            appendMissingNULLonIncoming: true,
+            debug: (msg) => {
+                console.log(msg)
+            },
+            onConnect: (frame) => {
+                console.log('Connected to STOMP server:', frame);
+                const subscription = clientRef.current.subscribe('/sub/chat/room/'+params.roomId, (message) => {
+                    const newMessage = JSON.parse(message.body);
+                    console.log(newMessage);
+                    setMessages((prevMessages) => [...prevMessages, newMessage]);
+                    setTimeout(()=>{
+                    flatList.current.scrollToEnd();
+                    },400)
+                });
+            },
+            onStompError: (error) => {
+                console.error('STOMP Error:', error);
+            },
+            onWebSocketError: (error) => {
+                console.error('WebSocket Error:', error);
+            },
+        });
 
         // STOMP 연결 시작
         clientRef.current.activate();
@@ -81,8 +106,10 @@ import { useUser } from '../context/UserProvider';
 
     const sendMessage = () => {
         if (clientRef.current && clientRef.current.connected) {
-            const testMessage = { message: textInput, roomId:params.roomId, sender: userId, type:"TALK"};
-            clientRef.current.publish({ destination: "/pub/chat/sendMessage", body: JSON.stringify(testMessage) });
+            const date = new Date();
+            const formattedDate = format(date, 'yyyy-MM-dd HH:mm');
+            const message = { message: textInput, roomId:params.roomId, sender: userId, type:"TALK", time: formattedDate};
+            clientRef.current.publish({ destination: "/pub/chat/sendMessage", body: JSON.stringify(message) });
             setTextInput("");
         }
     }
@@ -102,7 +129,6 @@ import { useUser } from '../context/UserProvider';
             >
             <FlatList
                 ref={flatList}
-                // style={styles.list}
                 contentContainerStyle={{ justifyContent: 'flex-end', flexGrow: 1 }}
                 data={messages}
                 keyExtractor={(item, index) => item.message + index}

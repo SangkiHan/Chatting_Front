@@ -17,6 +17,7 @@
                 <View>
                     <Text style={styles.name}>{chat.sender}</Text>
                     <Text style={styles.otherChat}>{chat.message}</Text>
+                    <Text style={styles.time}>{chat.time}</Text>
                 </View>
             </View>
         )
@@ -51,6 +52,9 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         marginVertical: 10,
     },
+    time: {
+        fontSize: 10
+    }
 });
         
  export default OtherChatCell;
