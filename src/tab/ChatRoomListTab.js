@@ -5,14 +5,15 @@
  * @format
  * @flow strict-local
  */
- import React from 'react';
+ import axios from 'axios';
+import React from 'react';
  import {StyleSheet, View, Text, Button, ScrollView} from 'react-native'
  import { GestureHandlerRootView, TouchableOpacity } from 'react-native-gesture-handler';
 import TopTitle from '../component/TopTitle';
  
  const press = (props, item) => {
      props.navigation.navigate("ChattingRoom",{
-         name: item.memberName[0],
+         name: item.memberList[0],
          roomId : item.roomId,
      })
  }
@@ -21,13 +22,13 @@ import TopTitle from '../component/TopTitle';
      return (
          <GestureHandlerRootView>
          {
-             props.persion.map((item, idx) => (
+             props.chatRoom.map((item, idx) => (
                  <TouchableOpacity  
                      style={styles.container} 
                      key={idx}
                      onPress={() => press(props, item)}
                  >
-                     <Text style={styles.name}>{item.memberName[0]}님과의 채팅방</Text>
+                     <Text style={styles.name}>{item.memberList[0]}님과의 채팅방</Text>
                  </TouchableOpacity>
              ))
          }
@@ -65,7 +66,11 @@ import TopTitle from '../component/TopTitle';
          return (
              <GestureHandlerRootView>
                  <TopTitle name={"채팅방"}/>
-                 <ScrollView>
+                 <ScrollView
+                    style={{
+                        height:"100%"
+                    }}
+                 >
                     <RenderPerson navigation={this.props.navigation} chatRoom={this.state.chatRoom}/>
                 </ScrollView>
              </GestureHandlerRootView>

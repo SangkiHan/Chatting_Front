@@ -10,9 +10,11 @@ import React, { useEffect } from 'react';
 import {StyleSheet, View, Text, Button, KeyboardAvoidingView, NativeModules} from 'react-native'
 import { Gesture, GestureHandlerRootView, TextInput } from 'react-native-gesture-handler';
 import { useState } from 'react/cjs/react.development';
+import { useUser } from '../context/UserProvider';
 
 const LoginScreen = (props) => {
 
+const { setUser } = useUser();
 const { StatusBarManager } = NativeModules;
 const [userName, setUserName] = useState('');
 const [statusBarHeight, setStatusBarHeight] = useState(0);
@@ -35,6 +37,7 @@ const onPress = () => {
     .then(response => {
       if (response.status === 200) {
         console.log('Login successful');
+        setUser(userName);
         props.navigation.navigate("Main")
       } else {
         console.log('Login failed');

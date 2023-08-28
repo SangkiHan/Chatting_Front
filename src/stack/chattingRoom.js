@@ -12,9 +12,10 @@
  import * as encoding from 'text-encoding';
  import MyChatCell from '../component/MyChatCell';
  import OtherChatCell from '../component/OtherChatCell';
+import { useUser } from '../context/UserProvider';
  
  const ChattingRoom = (props) => {
-
+    const { userId } = useUser();
     const { StatusBarManager } = NativeModules;
     const { params } = props.route;
  
@@ -80,7 +81,7 @@
 
     const sendMessage = () => {
         if (clientRef.current && clientRef.current.connected) {
-            const testMessage = { message: textInput, roomId:params.roomId, sender: "Snagki", type:"TALK"};
+            const testMessage = { message: textInput, roomId:params.roomId, sender: userId, type:"TALK"};
             clientRef.current.publish({ destination: "/pub/chat/sendMessage", body: JSON.stringify(testMessage) });
             setTextInput("");
         }
@@ -106,7 +107,7 @@
                 data={messages}
                 keyExtractor={(item, index) => item.message + index}
                 renderItem={({ item }) =>
-                item.sender === 'Snagki' ? (
+                item.sender === userId ? (
                     <MyChatCell chat={item} />
                 ) : (
                     <OtherChatCell chat={item} />

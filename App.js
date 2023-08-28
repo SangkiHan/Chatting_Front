@@ -15,6 +15,7 @@
  import TabScreen from './src/tab/tab';
  import ChattingRoom from './src/stack/chattingRoom';
  import LoginScreen from './src/stack/Login';
+ import {UserProvider} from './src/context/UserProvider';
  
  const Stack = createNativeStackNavigator();
 
@@ -22,28 +23,30 @@
  
    render () {
      return (
-       <NavigationContainer>
-         <Stack.Navigator>
-          <Stack.Screen
-            name="Login"
-            options={{
-              headerTitle:"Simple Chatting App"
-            }}
-            component={LoginScreen}
-           />
-           <Stack.Screen 
-             name="Main" 
-             component={TabScreen}
-             options={{
-               headerShown:false
-             }}
-           />
-           <Stack.Screen
-            name="ChattingRoom"
-            component={ChattingRoom}
-           />
-         </Stack.Navigator>
-       </NavigationContainer>
+       <UserProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Login"
+              options={{
+                headerTitle:"Simple Chatting App"
+              }}
+              component={LoginScreen}
+            />
+            <Stack.Screen 
+              name="Main" 
+              component={TabScreen}
+              options={{
+                headerShown:false
+              }}
+            />
+            <Stack.Screen
+              name="ChattingRoom"
+              component={ChattingRoom}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+       </UserProvider>
      );
    }
  };

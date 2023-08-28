@@ -52,8 +52,8 @@ class TabHomeScreen extends React.Component{
             showAlert('Login failed', 'Invalid credentials or server error');
           }
         })
-        .catch(error => {
-          alert(error);
+        .catch(response => {
+          alert(response);
         });
     }
 
