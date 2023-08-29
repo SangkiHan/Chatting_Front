@@ -45,6 +45,9 @@ import { useUser } from '../context/UserProvider';
         .then(response => {
           if (response.status === 200) {
             setMessages(response.data);
+            setTimeout(()=>{
+                flatList.current.scrollToEnd();
+            },400)
           } else {
 
           }

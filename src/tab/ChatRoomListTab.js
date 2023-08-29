@@ -7,7 +7,7 @@
  */
  import axios from 'axios';
 import React from 'react';
- import {StyleSheet, View, Text, Button, ScrollView} from 'react-native'
+ import {StyleSheet, View, Text, Button, ScrollView, SafeAreaView} from 'react-native'
  import { GestureHandlerRootView, TouchableOpacity } from 'react-native-gesture-handler';
 import TopTitle from '../component/TopTitle';
  
@@ -20,7 +20,7 @@ import TopTitle from '../component/TopTitle';
  
  const RenderPerson = (props) => {
      return (
-         <GestureHandlerRootView>
+         <View>
          {
              props.chatRoom.map((item, idx) => (
                  <TouchableOpacity  
@@ -32,7 +32,7 @@ import TopTitle from '../component/TopTitle';
                  </TouchableOpacity>
              ))
          }
-         </GestureHandlerRootView>
+         </View>
      );
  };
   
@@ -65,20 +65,21 @@ import TopTitle from '../component/TopTitle';
      render() {
          return (
              <GestureHandlerRootView>
-                 <TopTitle name={"채팅방"}/>
-                 <ScrollView
-                    style={{
-                        height:"100%"
-                    }}
-                 >
-                    <RenderPerson navigation={this.props.navigation} chatRoom={this.state.chatRoom}/>
-                </ScrollView>
+                 <SafeAreaView>
+                    <TopTitle name={"채팅방"}/>
+                    <ScrollView style={styles.tabContainer}>
+                        <RenderPerson navigation={this.props.navigation} chatRoom={this.state.chatRoom}/>
+                    </ScrollView>
+                </SafeAreaView>
              </GestureHandlerRootView>
          ) 
      }
  }
  
  const styles = StyleSheet.create({
+    tabContainer:{
+        height: '100%'
+    },
      container: {
          borderRadius: 10,
          borderColor: "black",

@@ -7,7 +7,7 @@
  */
 import axios from 'axios';
 import React, { useEffect } from 'react';
-import {StyleSheet, View, Text, Button, Alert} from 'react-native'
+import {StyleSheet, View, Text, Button, Alert, SafeAreaView} from 'react-native'
 import {  GestureHandlerRootView, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useState } from 'react/cjs/react.development';
 import TopTitle from '../component/TopTitle';
@@ -131,10 +131,15 @@ const TabHomeScreen = (props) => {
 
     return (
         <GestureHandlerRootView>
-            <TopTitle name={"친구목록"}/>
-            <ScrollView style={styles.tabContainer}>
-                <RenderPerson/>
-            </ScrollView>
+            <SafeAreaView>
+                <TopTitle name={"친구목록"}/>
+                <ScrollView style={styles.tabContainer}>
+                    <RenderPerson/>
+                </ScrollView>
+                <TouchableOpacity style={styles.addButton}>
+                    <Text style={styles.addButtonLabel}>+</Text>
+                </TouchableOpacity>
+            </SafeAreaView>
         </GestureHandlerRootView>
     )
 }
@@ -157,7 +162,24 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "bold",
         marginBottom: 5,
-    }
+    },
+    addButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        width: 50,
+        height: 50,
+        backgroundColor: '#007bff',
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 100
+    },
+    addButtonLabel: {
+        color: 'white',
+        fontSize: 32,
+        fontWeight: 'bold',
+    },
 })
     
 export default TabHomeScreen;

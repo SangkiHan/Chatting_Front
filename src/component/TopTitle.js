@@ -7,15 +7,12 @@
  */
  import React from 'react';
  import {StyleSheet, View, Text, Image} from 'react-native'
+
  
  const TopTitle = (props) => {
 
         return (
-            <View
-                style={{
-                    marginTop:60
-                }}
-            >
+            <View>
                 <Text style={styles.topTitle} >{props.name}</Text>
             </View>
         )
