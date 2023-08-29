@@ -6,67 +6,90 @@
  * @flow strict-local
  */
 import axios from 'axios';
-import React from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native'
+import React, { useEffect } from 'react';
+import {StyleSheet, View, Text, Button, Alert} from 'react-native'
 import {  GestureHandlerRootView, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useState } from 'react/cjs/react.development';
 import TopTitle from '../component/TopTitle';
 import { useUser } from '../context/UserProvider';
 
-const press = () => {
-    const { userId } = useUser();
-    // axios({
-    //     method: "post",
-    //     url: "http://218.155.95.66:8100/v1/member/login",
-    //     params: {
-    //         userId: userId,
-    //         other
-    //     },
-    //     responseType: "json"
-    // })
-    // .then(response => {
-    //   if (response.status === 200) {
-    //     console.log('Login successful');
-    //     setUser(userName);
-    //     props.navigation.navigate("Main")
-    //   } else {
-    //     console.log('Login failed');
-    //     showAlert('Login failed', 'Invalid credentials or server error');
-    //   }
-    // })
-    // .catch(error => {
-    //   alert(error);
-    // });
-}
 
-const RenderPerson = (props) => {
+const TabHomeScreen = (props) => {
+    
+    const [person, setPerson] = useState([]);
+    const { userData } = useUser();
 
-
-
-    return (
-        <GestureHandlerRootView>
-        {
-            props.person.map((item, idx) => (
-                <TouchableOpacity  
-                    style={styles.container} 
-                    key={idx}
-                    onPress={() => press(props, item)}
-                >
-                    <Text style={styles.name}>{item.userName}</Text>
-                </TouchableOpacity>
-            ))
-        }
-        </GestureHandlerRootView>
-    );
-};
-
-class TabHomeScreen extends React.Component{
-
-    state = {
-        person: []
+    const goAlert = (item) => {
+        Alert.alert(                  
+            item.userName+"님과의 채팅방이 존재하지 않습니다.",                    
+            "생성할까요?",
+            [                           
+              {
+                text: "네",                            
+                onPress: () => {
+                    // Axios를 사용하여 POST 요청 보내기
+                    const requestData = {
+                        otherUserId: item.otherMemberId,
+                    };
+                    axios.post("http://218.155.95.66:8100/v1/chatroom/save", requestData)
+                    .then(response => {
+                    if (response.status === 200) {
+                        const roomId = response.data;
+                        props.navigation.navigate('ChattingRoom', {
+                        name: item.userName,
+                        roomId: roomId,
+                        });
+                    } else {
+                        console.log('API failed');
+                    }
+                    })
+                    .catch(error => {
+                    alert(error);
+                    });
+                },   
+              },
+              { 
+                text: "아니요", 
+                style: "cancel"
+              }
+            ],
+            { 
+                cancelable: false 
+            }
+        )
     }
 
-    componentDidMount(){
+    const press = (item) => {
+        axios({
+            method: "get",
+            url: "http://218.155.95.66:8100/v1/chatroom/exist",
+            params: {
+                otherUserId:item.otherMemberId
+            },
+            responseType: "json"
+        })
+        .then(response => {
+          if (response.status === 200) {
+              const roomId = response.data.roomId;
+              if(roomId!=null || roomId!=undefined){
+                props.navigation.navigate("ChattingRoom",{
+                    name: item.userName,
+                    roomId : roomId
+                })
+              }
+              else {
+                goAlert(item)
+              }
+          } else {
+            console.log('API failed');
+          }
+        })
+        .catch(error => {
+          alert(error);
+        });
+    }
+
+    const findFriends = () => {
         axios({
             method: "get",
             url: "http://218.155.95.66:8100/v1/friend/findAll",
@@ -74,11 +97,9 @@ class TabHomeScreen extends React.Component{
         })
         .then(response => {
           if (response.status === 200) {
-            // console.log(response.data);
-            this.setState({person: response.data})
+            setPerson(response.data)
           } else {
-            console.log('Login failed');
-            showAlert('Login failed', 'Invalid credentials or server error');
+            console.log('API failed');
           }
         })
         .catch(response => {
@@ -86,17 +107,36 @@ class TabHomeScreen extends React.Component{
         });
     }
 
-    render() {
+    useEffect(() => {
+        findFriends();
+    }, []);
+
+    const RenderPerson = () => {
+        return (
+            <GestureHandlerRootView>
+            {
+                person.map((item, idx) => (
+                    <TouchableOpacity  
+                        style={styles.container} 
+                        key={idx}
+                        onPress={()=>press(item)}
+                    >
+                        <Text style={styles.name}>{item.userName}</Text>
+                    </TouchableOpacity>
+                ))
+            }
+            </GestureHandlerRootView>
+        );
+    };
 
     return (
         <GestureHandlerRootView>
             <TopTitle name={"친구목록"}/>
             <ScrollView style={styles.tabContainer}>
-                <RenderPerson person={this.state.person}/>
+                <RenderPerson/>
             </ScrollView>
         </GestureHandlerRootView>
-        )
-    }
+    )
 }
 
 const styles = StyleSheet.create({
